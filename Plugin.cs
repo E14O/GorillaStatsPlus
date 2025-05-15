@@ -1,57 +1,50 @@
-﻿using System;
+﻿using System.Collections;
 using BepInEx;
-using UnityEngine;
-using UnityEngine.UI;
-using Utilla;
-using Bepinject;
-using Photon.Pun;
-using ExitGames.Client.Photon;
-using Photon.Realtime;
-using UnityEngine.Timeline;
 using GorillaNetworking;
-using System.Collections.Specialized;
-using System.Net;
-using HarmonyLib;
-using System.Collections;
-using System.Runtime.InteropServices;
+using Photon.Pun;
+using Photon.Realtime;
+using PlayFab;
+using PlayFab.ClientModels;
+using TMPro;
+using UnityEngine;
 
 namespace GorillaServerStats
 {
-    [ModdedGamemode]
     [BepInDependency("org.legoandmars.gorillatag.utilla", "1.5.0")]
     [BepInPlugin("com.thaterror404.gorillatag.SererStats", "ServerStats", "1.0.7")]
 
     public class Plugin : BaseUnityPlugin
     {
-        public static Plugin Instance; // Singleton instance
+        public static Plugin Instance;
 
         bool inRoom;
-        public GameObject forestSign;
-        public Text signText;
-        public bool init;
-        public int tags = 0;
-        public int Tagged;
-        public bool isKeyCloned = false;
+        public GameObject _forestSign;
+        public TextMeshPro _signText;
+        public bool _init;
+        public int _tags = 0;
+        public int _ptimer = 20;
+        public int totalCodesJoined = 1;
+        public int _Tagged;
+        public bool _isKeyCloned = false;
 
-        Coroutine timerCoroutine;
+        Coroutine timerCoroutine, PageCoroutine;
         System.TimeSpan time = System.TimeSpan.FromSeconds(0);
         string playTime = "00:00:00";
+        public bool screen1 = true;
+        string PlayerID;
+        public int mycosmeticcost;
 
         private void Awake()
         {
-            // Singleton pattern to ensure only one instance of this class
             if (Instance == null)
             {
                 Instance = this;
                 DontDestroyOnLoad(gameObject);
-                Debug.Log("[ServerStats] Plugin Awake and Singleton Instance set.");
-                
-                // Start the timer as soon as the plugin is loaded
                 timerCoroutine = StartCoroutine(Timer());
+                PageCoroutine = StartCoroutine(PageSwap());
             }
             else
             {
-                Debug.LogWarning("[ServerStats] Multiple instances detected. Destroying...");
                 Destroy(gameObject);
                 return;
             }
@@ -59,53 +52,63 @@ namespace GorillaServerStats
 
         void Start()
         {
-            Utilla.Events.GameInitialized += OnGameInitialized;
+            GorillaTagger.OnPlayerSpawned(OnGameInitialized);
         }
-
         public string boardStatsUpdate()
         {
             if (PhotonNetwork.CurrentRoom == null)
             {
-                return "Hello! Thank you for using ServerStats!\r\n\r\nPlease join a room for stats to appear!";
-            } else { 
+                return "Welcome To Gorilla Stats!" +
+                "\r\n\nOriginal By: 3rr0r" +
+                "\r\nFixed By: E14O" +
+                "\r\n\nPlease join a room for stats to appear!";
+            }
+            else
+            {
                 var lobbyCode = PhotonNetwork.CurrentRoom.Name;
                 int playerCount = PhotonNetwork.CurrentRoom.PlayerCount;
                 var master = PhotonNetwork.MasterClient;
                 int totalPlayerCount = PhotonNetwork.CountOfPlayersInRooms;
-                var totalLobbies = "";
-
-                if (!System.IO.File.Exists("./config.json"))
+                // int ShinyRockCount =
+                // int CosmeticCount = ;
+                // int AccountValue =
+                Color ColourCode = GorillaTagger.Instance.offlineVRRig.playerColor;
+                int R = Mathf.RoundToInt(ColourCode.r * 9f);
+                int G = Mathf.RoundToInt(ColourCode.g * 9f);
+                int B = Mathf.RoundToInt(ColourCode.b * 9f);
+                if (screen1)
                 {
-                    Debug.LogError("[ServerStats] config.json not found! Creating...");
-                    System.IO.File.WriteAllText("./config.json", "{\"totalLobbies\":\"0\"}");
-                    return "Hello! Thank you for using ServerStats!\r\n\r\nPlease join a room for stats to appear!\r\n\r\nPLAY TIME: " + playTime;
-                }
-
-                string config = System.IO.File.ReadAllText("./config.json");
-                NameValueCollection configCollection = System.Web.HttpUtility.ParseQueryString(config);
-                totalLobbies = configCollection["totalLobbies"];
-
-                return "LOBBY CODE: " + lobbyCode +
+                    return "LOBBY CODE: " + lobbyCode + "                   " + _ptimer +
+                    "\r\nTOTAL LOBBYS: " + totalCodesJoined +
                     "\r\nPLAYERS: " + playerCount +
                     "\r\nMASTER: " + master.NickName +
                     "\r\nACTIVE PLAYERS: " + totalPlayerCount +
                     "\r\nPLAY TIME: " + playTime +
                     "\r\nPING: " + PhotonNetwork.GetPing();
+                }
+                else
+                {
+                    return "Player Colour: " + "R:" + R + " G:" + G + " B:" + B + "                 " + _ptimer +
+                    "\r\nShiny Rock Count: ERROR NOT ADDED YET" +
+                    "\r\nCosmetic Count: ERROR NOT ADDED YET" + 
+                    "\r\nAccount Value: ERROR NOT ADDED YET" +
+                    "\r\nPlayer ID: ERROR NOT ADDED YET";
+                }
             }
-
         }
-        void OnGameInitialized(object sender, EventArgs e)
+
+        void OnGameInitialized()
         {
-            Debug.Log("[ServerStats] Game Initialized.");
-            init = true;
-            forestSign = GameObject.Find("Environment Objects/LocalObjects_Prefab/TreeRoom/TreeRoomInteractables/UI/Tree Room Texts/WallScreenForest");
-            if (forestSign == null)
+            
+            _init = true;
+            _forestSign = GameObject.Find("Environment Objects/LocalObjects_Prefab/TreeRoom/ScreenText (1)");
+            if (_forestSign == null)
             {
                 Debug.LogError("[ServerStats] Could not find ForestSign");
                 return;
             }
-            signText = forestSign.GetComponent<Text>();
-            if (signText == null)
+            _signText = _forestSign.GetComponent<TextMeshPro>();
+            if (_signText == null)
             {
                 Debug.LogError("[ServerStats] Could not find Text component for ForestSign");
                 return;
@@ -117,56 +120,16 @@ namespace GorillaServerStats
             }
             else
             {
-                signText.text = boardStatsUpdate();
-            }
-        }
-
-        void OnEnable()
-        {
-            if (init)
-            {
-                if (forestSign != null)
-                {
-                    signText = forestSign.GetComponent<Text>();
-                    signText.text = boardStatsUpdate();
-                }
-                else
-                {
-                    Debug.Log("[ServerStats] forestSign doesn't exist in OnJoin");
-                }
-            }
-            else
-            {
-                Debug.Log("[ServerStats] Not initialized in OnEnable");
-            }
-        }
-
-        void OnDisable()
-        {
-            if (init)
-            {
-                if (forestSign != null)
-                {
-                    signText = forestSign.GetComponent<Text>();
-                    signText.text = "WELCOME TO GORILLA TAG!\r\n\r\nPLEASE JOIN A ROOM FOR STATS TO APPEAR!";
-                }
-                else
-                {
-                    Debug.Log("[ServerStats] forestSign doesn't exist in OnDisable");
-                }
-            }
-            else
-            {
-                Debug.Log("[ServerStats] Not initialized in OnDisable");
+                _signText.text = boardStatsUpdate();
             }
         }
 
         void Update()
         {
-            if (forestSign != null)
+            if (_forestSign != null)
             {
-                signText = forestSign.GetComponent<Text>();
-                signText.text = boardStatsUpdate();
+                _signText = _forestSign.GetComponent<TextMeshPro>();
+                _signText.text = boardStatsUpdate();
             }
             else
             {
@@ -174,74 +137,81 @@ namespace GorillaServerStats
             }
         }
 
-        public void OnJoin(string gamemode)
+        public void OnJoin()
         {
-            Debug.Log("[ServerStats] Joined a room.");
             inRoom = true;
+            totalCodesJoined++;
 
-            // Ensure the Timer coroutine is correctly controlled
             if (timerCoroutine != null)
             {
                 StopCoroutine(timerCoroutine);
             }
 
-            if (forestSign != null)
+            if (_forestSign != null)
             {
-                signText = forestSign.GetComponent<Text>();
-                signText.text = boardStatsUpdate();
+                _signText = _forestSign.GetComponent<TextMeshPro>();
+                _signText.text = boardStatsUpdate();
             }
             else
             {
                 Debug.Log("[ServerStats] forestSign doesn't exist in OnJoin");
             }
-
-            if (!System.IO.File.Exists("./config.json"))
-            {
-                Debug.LogError("[ServerStats] config.json not found! Creating...");
-                System.IO.File.WriteAllText("./config.json", "{\"totalLobbies\":\"0\"}");
-            }
-
-            string config = System.IO.File.ReadAllText("./config.json");
-            NameValueCollection configCollection = System.Web.HttpUtility.ParseQueryString(config);
-            int totalLobbies = Int32.Parse(configCollection["totalLobbies"]);
-            totalLobbies++;
-            configCollection["totalLobbies"] = totalLobbies.ToString();
-            System.IO.File.WriteAllText("./config.json", configCollection.ToString());
         }
 
-        public void OnLeave(string gamemode)
+        public void OnLeave()
         {
-            Debug.Log("[ServerStats] Left a room.");
             inRoom = false;
 
-            if (forestSign != null)
+            if (_forestSign != null)
             {
-                signText = forestSign.GetComponent<Text>();
-                signText.text = "WELCOME TO GORILLA TAG!\r\n\r\nPLEASE JOIN A ROOM FOR STATS TO APPEAR!";
+                _signText = _forestSign.GetComponent<TextMeshPro>();
+                _signText.text = "Welcome To Gorilla Tag!\r\n\r\nPlease Join A Room For Stats To Appear!\r\n\rYou Have Been Playing For: " + playTime;
             }
         }
+        IEnumerator PageSwap()
+        {
+            while (true)
+            {
+                yield return new WaitForSeconds(1);
+                if (_ptimer < 21 && _ptimer > 0)
+                {
+                    _ptimer--;
+                }
+                else if (_ptimer <= 0)
+                {
+                    _ptimer = 20;
+                    if (screen1 == false)
+                    {
+                        screen1 = true;
+                    }
+                    else if(screen1 == true)
+                    {
+                        screen1 = false;
+                    }
 
+                }
+
+                _signText.text = boardStatsUpdate();
+            }
+        }
         IEnumerator Timer()
         {
-            Debug.Log("[ServerStats] Timer coroutine started.");
-            while (true) // Run continuously
+            while (true)
             {
-                yield return new WaitForSeconds(1); 
+                yield return new WaitForSeconds(1);
                 time = time.Add(System.TimeSpan.FromSeconds(1));
                 playTime = time.ToString(@"hh\:mm\:ss");
 
-                // Update signText directly here
-                if (forestSign != null)
+                if (_forestSign != null)
                 {
-                    signText = forestSign.GetComponent<Text>();
-                    signText.text = boardStatsUpdate();
+                    _signText = _forestSign.GetComponent<TextMeshPro>();
+                    _signText.text = boardStatsUpdate();
                 }
                 else
                 {
                     Debug.LogWarning("[ServerStats] forestSign not found in Timer Coroutine.");
                 }
 
-                Debug.Log("[ServerStats] Timer Coroutine Running. Current playTime: " + playTime);
             }
         }
     }

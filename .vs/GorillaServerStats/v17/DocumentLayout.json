@@ -1,0 +1,54 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Ethan\\Downloads\\GorillaStatsPlus\\GorillaStatsPlus\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{3A0C3F0F-A93D-40CF-AC56-2C6EC09C7D23}|GorillaServerStats.csproj|c:\\users\\ethan\\downloads\\gorillastatsplus\\gorillastatsplus\\plugin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3A0C3F0F-A93D-40CF-AC56-2C6EC09C7D23}|GorillaServerStats.csproj|solutionrelative:plugin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3A0C3F0F-A93D-40CF-AC56-2C6EC09C7D23}|GorillaServerStats.csproj|c:\\users\\ethan\\downloads\\gorillastatsplus\\gorillastatsplus\\makerelease.ps1||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{3A0C3F0F-A93D-40CF-AC56-2C6EC09C7D23}|GorillaServerStats.csproj|solutionrelative:makerelease.ps1||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MakeRelease.ps1",
+              "DocumentMoniker": "C:\\Users\\Ethan\\Downloads\\GorillaStatsPlus\\GorillaStatsPlus\\MakeRelease.ps1",
+              "RelativeDocumentMoniker": "MakeRelease.ps1",
+              "ToolTip": "C:\\Users\\Ethan\\Downloads\\GorillaStatsPlus\\GorillaStatsPlus\\MakeRelease.ps1",
+              "RelativeToolTip": "MakeRelease.ps1",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-05-15T14:39:43.873Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Plugin.cs",
+              "DocumentMoniker": "C:\\Users\\Ethan\\Downloads\\GorillaStatsPlus\\GorillaStatsPlus\\Plugin.cs",
+              "RelativeDocumentMoniker": "Plugin.cs",
+              "ToolTip": "C:\\Users\\Ethan\\Downloads\\GorillaStatsPlus\\GorillaStatsPlus\\Plugin.cs",
+              "RelativeToolTip": "Plugin.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFsAAABBAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-14T19:28:04.32Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
