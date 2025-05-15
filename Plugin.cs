@@ -78,21 +78,21 @@ namespace GorillaServerStats
                 int B = Mathf.RoundToInt(ColourCode.b * 9f);
                 if (screen1)
                 {
-                    return "LOBBY CODE: " + lobbyCode + "                   " + _ptimer +
-                    "\r\nTOTAL LOBBYS: " + totalCodesJoined +
+                    return "LOBBY CODE: " + lobbyCode + " | TOTAL LOBBYS: " + totalCodesJoined +
                     "\r\nPLAYERS: " + playerCount +
                     "\r\nMASTER: " + master.NickName +
                     "\r\nACTIVE PLAYERS: " + totalPlayerCount +
                     "\r\nPLAY TIME: " + playTime +
-                    "\r\nPING: " + PhotonNetwork.GetPing();
+                    "\r\nPING: " + PhotonNetwork.GetPing() + "                             " + _ptimer;
                 }
                 else
                 {
-                    return "Player Colour: " + "R:" + R + " G:" + G + " B:" + B + "                 " + _ptimer +
+                    return "Player Colour: " + "R:" + R + " G:" + G + " B:" + B +
                     "\r\nShiny Rock Count: ERROR NOT ADDED YET" +
-                    "\r\nCosmetic Count: ERROR NOT ADDED YET" + 
+                    "\r\nCosmetic Count: ERROR NOT ADDED YET" +
                     "\r\nAccount Value: ERROR NOT ADDED YET" +
-                    "\r\nPlayer ID: ERROR NOT ADDED YET";
+                    "\r\nPlayer ID: ERROR NOT ADDED YET" +
+                    "\r\n" + _ptimer;
                 }
             }
         }
