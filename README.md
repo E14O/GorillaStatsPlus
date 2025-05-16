@@ -4,10 +4,7 @@
 The "Gorilla Server Stats" mod provides server statistics in the Gorilla Tag game. These stats include details like the lobby code, the number of players, the master client's nickname, the total number of players across all rooms, and the count of tags in the current room.
 
 ## Dependencies
-
-- Utilla
 - BepInEx
-- [Honeylib](https://github.com/BzzzThe18th/HoneyLib/releases/tag/1.0.4)
 
 ## Installation
 
